@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header"
 import Navbar from "@/components/Navbar"
+import Products from "@/components/Products"
 
 
 function LandingPage() {
@@ -7,6 +8,7 @@ function LandingPage() {
     <>
      <Navbar />
      <Header />
+     <Products />
     </>
   )
 }
