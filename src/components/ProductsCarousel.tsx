@@ -6,10 +6,19 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { flashSales } from "@/lib/products";
 
 type ProductsCarouselProps = {
-  products: typeof flashSales
+products: Array<{
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  stock: number;
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+}>
 }
 
 

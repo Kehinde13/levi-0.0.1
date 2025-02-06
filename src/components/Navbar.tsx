@@ -1,8 +1,11 @@
+import { useBasket } from "@/context/basketContext";
 import { InputWithButton } from "./InputWithButton";
 import LandingPageDrawer from "./landingPageDrawer";
-import Cart from "./ShoppingCart";
+import { ShoppingCart } from 'lucide-react'
+import { Link } from "react-router-dom";
 
 function Navbar() {
+  const { basket } = useBasket();
   return (
     <nav className="flex justify-between p-5 shadow-xl">
       <h1 className="text-3xl font-bold">Levi</h1>
@@ -16,7 +19,12 @@ function Navbar() {
 
       <div className="md:flex items-center space-x-4 hidden">
         <InputWithButton />
-        <Cart />
+        <Link to={'basket'} className="relative">
+          <span className="absolute rounded-full bg-red-600 text-xs px-1 left-4 bottom-4 text-white">
+            {basket.length}
+          </span>
+          <ShoppingCart />
+        </Link>
       </div>
 
       <LandingPageDrawer />
