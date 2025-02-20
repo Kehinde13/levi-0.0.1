@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { log } from "console";
 
-const API_URL = "http://localhost:5000/api/admin";
+const API_URL = "http://localhost:3005/api/admin";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -30,7 +29,8 @@ const AdminDashboard = () => {
 
         console.log(userRes.data);
 
-        if (userRes.data.role !== "admin") {
+        const adminData = userRes.data as { role: string };
+        if (adminData.role !== "admin") {
           alert("Access Denied! Admins only.");
           navigate("/login");
           return;
