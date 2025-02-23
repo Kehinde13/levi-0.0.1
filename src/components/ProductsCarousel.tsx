@@ -22,7 +22,7 @@ products: Array<{
 }
 
 
-export function ProductsCarousel({products} : ProductsCarouselProps) {
+export function ProductsCarousel({products = []} : ProductsCarouselProps) {
   return (
     <Carousel className="w-full my-10 md:my-20">
       <CarouselContent className="-ml-1">

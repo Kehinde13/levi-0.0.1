@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ProductsCarousel } from "./ProductsCarousel";
+import { ApiProductResponse, IProduct } from "@/lib/types";
 
 const API_URL = "http://localhost:3005/api/products"
-interface IProduct extends Document {
-  _id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  stock: number;
-  image: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+
 
 function Products() {
     const [products, setProducts] = useState<IProduct[]>([]);
@@ -23,8 +14,8 @@ function Products() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get<IProduct[]>(API_URL);
-                setProducts(response.data);
+                const response = await axios.get<ApiProductResponse>(API_URL); 
+                setProducts(response.data.products); 
             } catch (err) {
                 setError("Failed to load products");
                 console.error(err);
@@ -32,9 +23,10 @@ function Products() {
                 setLoading(false);
             }
         };
-
+    
         fetchProducts();
     }, []);
+    
 
     return (
         <div className="lg:p-20 md:p-10 p-5 w-full">
