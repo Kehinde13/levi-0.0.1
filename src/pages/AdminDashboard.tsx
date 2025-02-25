@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IProduct, IUser } from "@/lib/types";
+import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
 
-const API_URL = "http://localhost:3005/api/admin";
+const API_URL = "http://localhost:3005/api";
 
 
 const AdminDashboard = () => {
@@ -22,21 +22,21 @@ const AdminDashboard = () => {
       }
 
       try {
-        const usersRes = await axios.get<IUser[]>(`${API_URL}/users`, {
+        const usersRes = await axios.get<IUser[]>(`${API_URL}/users/customers`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const vendorsRes = await axios.get<IUser[]>(`${API_URL}/vendors`, {
+        const vendorsRes = await axios.get<IUser[]>(`${API_URL}/users/vendors`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const productsRes = await axios.get<IProduct[]>(`${API_URL}/products`, {
+        const productsRes = await axios.get<ApiProductResponse>(`${API_URL}/products`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         setUsers(usersRes.data);
         setVendors(vendorsRes.data);
-        setProducts(productsRes.data);
+        setProducts(productsRes.data.products);
       } catch (err) {
         setError(err.response?.data?.message || "Error loading data");
       }
@@ -51,7 +51,7 @@ const AdminDashboard = () => {
 
     try {
       await axios.put(
-        `${API_URL}/approve-vendor/${vendorId}`,
+        `${API_URL}/admin/approve-vendor/${vendorId}`,
         { status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
       alert(`Vendor ${status ? "approved" : "rejected"} successfully!`);
       setVendors((prev) => prev.map((v) => (v._id === vendorId ? { ...v, isApproved: status } : v)));
     } catch (err: any) {
-      alert("Error approving vendor");
+      alert(err.response?.data?.message || "Failed to approve vendor");
     }
   };
 
@@ -69,6 +69,23 @@ const AdminDashboard = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
+
+      <h2 className="text-xl font-semibold mt-6">Approved Vendors</h2>
+      <ul>
+        {vendors
+          .filter((vendor) => vendor.isApproved)
+          .map((vendor) => (
+            <li key={vendor._id} className="flex justify-between p-2 border">
+              <p>{vendor.name} ({vendor.email})</p>
+              <button onClick={() => approveVendor(vendor._id, true)} className="bg-green-500 text-white px-4 py-1">
+                Approve
+              </button>
+              <button onClick={() => approveVendor(vendor._id, false)} className="bg-red-500 text-white px-4 py-1">
+                Reject
+              </button>
+            </li>
+          ))}
+      </ul>
 
       <h2 className="text-xl font-semibold mt-6">Pending Vendors</h2>
       <ul>
@@ -100,7 +117,7 @@ const AdminDashboard = () => {
       <ul>
         {products.map((product) => (
           <li key={product._id} className="p-2 border">
-            {product.name} - ${product.price} (Vendor: {product.vendor?.name || "Unknown"})
+            {product.name} - ${product.price} 
           </li>
         ))}
       </ul>
