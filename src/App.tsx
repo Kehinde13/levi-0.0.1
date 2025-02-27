@@ -3,6 +3,7 @@ import LandingPage from "./pages/LandingPage";
 import Basket from "./components/ShoppingCart";
 import Login from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
+import VendorDashboard from "./pages/VendorDashboard";
 
 function App() {
   return (
@@ -12,6 +13,8 @@ function App() {
         <Route path="/basket" element={<Basket />} /> 
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/vendor" element={<VendorDashboard />} />
+        <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
     </Router>
   );

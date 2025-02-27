@@ -8,27 +8,45 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-interface LoginResponse {
+  interface LoginResponse {
     token: string;
-}
+    user: {
+      id: string;
+      name: string;
+      isApproved: boolean;
+      role: string;
+    };
+  }
 
-const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     try {
-        const res = await axios.post<LoginResponse>("http://localhost:3005/api/auth/login", { email, password });
-        localStorage.setItem("token", res.data.token);
-        alert("Login successful!");
-        navigate("/admin"); // ✅ Redirect to admin dashboard
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const res = await axios.post<LoginResponse>("http://localhost:3005/api/auth/login", {
+        email,
+        password,
+      });
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.user.role);
+      localStorage.setItem("id", res.data.user.id);
+      alert("Login successful!");
+
+
+      if (res.data.user.role === "admin") {
+        navigate("/admin"); // Redirect to admin dashboard
+      } else if (res.data.user.role === "vendor") {
+        navigate("/vendor"); // Redirect to vendor dashboard
+      } else {
+        setError("Unauthorized! Please log in as an admin or vendor.");
+      }
     } catch (err) {
-        setError("Invalid credentials");
+      setError("Invalid credentials");
     }
-};
+  };
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-semibold mb-6">Admin Login</h1>
+      <h1 className="text-3xl font-semibold mb-6">Login</h1>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleLogin} className="space-y-4">
         <input
