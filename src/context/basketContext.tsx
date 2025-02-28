@@ -1,24 +1,7 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { useState, ReactNode, useEffect } from "react";
+import { BasketContext } from "./BasketContextDefinition";
+import { IProduct } from "./BasketContextDefinition";
 
-// Define Product type
-interface IProduct {
-  id: string;
-  name: string;
-  price: number;
-  image?: string;
-  quantity: number;
-}
-
-// Define BasketContext type
-interface IBasketContext {
-  basket: IProduct[];
-  addProductToBasket: (id: string, product: IProduct) => void;
-  removeProductFromBasket: (id: string) => void;
-  updateProductQuantity: (id: string, quantity: number) => void;
-}
-
-// ✅ Create Context (No namespace)
-export const BasketContext = createContext<IBasketContext | undefined>(undefined);
 
 // ✅ Provider Component
 export const BasketProvider = ({ children }: { children: ReactNode }) => {
@@ -67,11 +50,5 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// ✅ Custom Hook (Correct way to access context)
-export const useBasket = () => {
-  const context = useContext(BasketContext);
-  if (!context) {
-    throw new Error("useBasket must be used within a BasketProvider");
-  }
-  return context;
-};
+
+ 

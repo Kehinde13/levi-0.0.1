@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
-import { useBasket } from "@/context/basketContext";
+import { useBasket } from "@/hooks/useBasket";
 
 type Prop = {
   product: {

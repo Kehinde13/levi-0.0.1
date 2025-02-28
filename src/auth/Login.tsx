@@ -39,7 +39,7 @@ const Login = () => {
       } else {
         setError("Unauthorized! Please log in as an admin or vendor.");
       }
-    } catch (err) {
+    } catch {
       setError("Invalid credentials");
     }
   };

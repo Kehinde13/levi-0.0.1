@@ -1,7 +1,7 @@
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Menu, ShoppingCart } from "lucide-react";
 import { InputWithButton } from "./InputWithButton";
-import { useBasket } from "@/context/basketContext";
+import { useBasket } from "@/hooks/useBasket";
 import { Link } from "react-router-dom";
 
 

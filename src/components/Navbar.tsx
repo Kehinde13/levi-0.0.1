@@ -1,4 +1,4 @@
-import { useBasket } from "@/context/basketContext";
+import { useBasket } from "@/hooks/useBasket";
 import { InputWithButton } from "./InputWithButton";
 import LandingPageDrawer from "./landingPageDrawer";
 import { ShoppingCart } from 'lucide-react'

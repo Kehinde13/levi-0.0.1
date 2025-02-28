@@ -1,4 +1,4 @@
-import { useBasket } from "@/context/basketContext";
+import { useBasket } from "@/hooks/useBasket";
 import { useState } from "react";
 
 const Basket = () => {
