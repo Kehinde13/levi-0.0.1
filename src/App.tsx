@@ -7,6 +7,7 @@ import Login from "./auth/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
 import { Logout } from "./auth/Logout";
+import SignUpForm from "./auth/Signup";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/basket" element={<Basket />} />
           <Route path="/login" element={<Login />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/signup" element={<SignUpForm />} />
 
 
           {/* Protected Routes */}
