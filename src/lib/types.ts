@@ -42,4 +42,13 @@ export interface ApiProductResponse {
     currentPage: number;
     products: IProduct[];
   }
+
+export type ErrorResponse = {
+    response?: {
+      data?: {
+        message?: string;
+      };
+    };
+  };
+  
   

@@ -51,8 +51,11 @@ const VendorDashboard = () => {
         );
 
         setProducts(productsRes.data.products);
-      } catch (err: any) {
-        setError(err.response?.data?.message || "Error loading data");
+      } catch (err) {
+        const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to delete product";
+        setError(errorMessage);
       }
       setLoading(false);
     };
@@ -95,8 +98,11 @@ const VendorDashboard = () => {
         stock: 0,
         image: "",
       });
-    } catch (err: any) {
-        alert(err.response.data.message || "Failed to add product");
+    } catch (err) {
+      const errorMessage =
+      (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+      "Failed to add product";
+      alert(errorMessage);
     }
   };
 
@@ -120,8 +126,11 @@ const VendorDashboard = () => {
         )
       );
       alert("Product updated successfully!");
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to update product");
+    } catch (err) {
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to update product";
+      alert(errorMessage);
     }
   };
 
@@ -133,8 +142,11 @@ const VendorDashboard = () => {
 
       setProducts((prev) => prev.filter((p) => p._id !== productId));
       alert("Product deleted successfully!");
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to delete product");
+    } catch (err) {
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to delete product";
+      alert(errorMessage);
     }
   };
 

@@ -40,7 +40,10 @@ const AdminDashboard = () => {
         setVendors(vendorsRes.data);
         setProducts(productsRes.data.products);
       } catch (err) {
-        setError(err.response?.data?.message || "Error loading data");
+        const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to delete product";
+        setError(errorMessage);
       }
       setLoading(false);
     };
@@ -60,8 +63,11 @@ const AdminDashboard = () => {
 
       alert(`Vendor ${status ? "approved" : "rejected"} successfully!`);
       setVendors((prev) => prev.map((v) => (v._id === vendorId ? { ...v, isApproved: status } : v)));
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Failed to approve vendor");
+    } catch (err) {
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
+        "Failed to delete product";
+        alert(errorMessage);
     }
   };
 
