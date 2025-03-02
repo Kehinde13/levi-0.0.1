@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { AuthContext } from "../context/AuthContextDefinition";
+
 const Login = () => {
+  const authContext = useContext(AuthContext);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +32,10 @@ const Login = () => {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.user.role);
       localStorage.setItem("id", res.data.user.id);
-      alert("Login successful!");
+
+      authContext?.setUserRole(res.data.user.role); // Ensure context updates immediately
+      alert(`Login successful!`);
+
 
 
       if (res.data.user.role === "admin") {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:3005/api";
 
@@ -17,6 +18,7 @@ const VendorDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -59,12 +61,17 @@ const VendorDashboard = () => {
   }, [token, products]);
 
   const addProduct = async () => {
-    
-    if (!newProduct.name || !newProduct.description || !newProduct.price || !newProduct.category || !newProduct.stock) {
+    if (
+      !newProduct.name ||
+      !newProduct.description ||
+      !newProduct.price ||
+      !newProduct.category ||
+      !newProduct.stock
+    ) {
       alert("Please fill in all fields before adding a product.");
       return;
     }
-  
+
     try {
       const res = await axios.post<IProduct>(
         `${API_URL}/products/add`,
@@ -73,20 +80,25 @@ const VendorDashboard = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-  
+
       // Optimistically update products without waiting for useEffect
       setProducts((prev) => [...prev, res.data]);
-  
+
       alert("Product added successfully!");
-  
+
       // Reset form
-      setNewProduct({ name: "", description: "", price: 0, category: "", stock: 0, image: "" });
+      setNewProduct({
+        name: "",
+        description: "",
+        price: 0,
+        category: "",
+        stock: 0,
+        image: "",
+      });
     } catch (err: any) {
-      console.error(err);
-      alert(err.response?.data?.message || "Failed to add product");
+        alert(err.response.data.message || "Failed to add product");
     }
   };
-  
 
   const updateProduct = async (
     productId: string,
@@ -102,7 +114,7 @@ const VendorDashboard = () => {
       );
 
       // Optimistically update the product list
-    setProducts((prev) =>
+      setProducts((prev) =>
         prev.map((product) =>
           product._id === updatedProduct._id ? res.data : product
         )
@@ -126,6 +138,7 @@ const VendorDashboard = () => {
     }
   };
 
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -133,13 +146,20 @@ const VendorDashboard = () => {
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Vendor Dashboard</h1>
 
-        <div className="border p-4 mb-4">
-            <h2 className="font-semibold">Vendor Details</h2>
-            <p>Name: {vendor?.name}</p>
-            <p>Email: {vendor?.email}</p>
-            <p>Role: {vendor?.role}</p>
-            <p>Approved: {vendor?.isApproved ? "Yes" : "No"}</p>
-        </div>  
+      <div className="border p-4 mb-4">
+        <h2 className="font-semibold">Vendor Details</h2>
+        <p>Name: {vendor?.name}</p>
+        <p>Email: {vendor?.email}</p>
+        <p>Role: {vendor?.role}</p>
+        <p>Approved: {vendor?.isApproved ? "Yes" : "No"}</p>
+
+        <button
+          onClick={() => navigate("/logout")}
+          className="bg-red-500 text-white px-4 py-2 mt-4"
+        >
+          Logout
+        </button>
+      </div>
 
       <div className="container mx-auto p-6">
         <h2 className="text-xl font-semibold mt-6">Manage Product</h2>

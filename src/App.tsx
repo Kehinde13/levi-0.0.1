@@ -6,6 +6,7 @@ import Basket from "./components/ShoppingCart";
 import Login from "./auth/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
+import { Logout } from "./auth/Logout";
 
 function App() {
   return (
@@ -15,6 +16,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/basket" element={<Basket />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
+
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>

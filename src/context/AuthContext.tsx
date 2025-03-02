@@ -14,6 +14,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } else {
       localStorage.removeItem("role");
     }
+    console.log("userRole", userRole);
+    
   }, [userRole]);
 
   return (

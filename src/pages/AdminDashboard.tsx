@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:3005/api";
 
@@ -11,6 +12,7 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -70,17 +72,32 @@ const AdminDashboard = () => {
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
 
+      <button
+        onClick={() => navigate("/logout")} 
+        className="bg-red-500 text-white px-4 py-2 mt-4"
+      >
+        Logout
+      </button>
+
       <h2 className="text-xl font-semibold mt-6">Approved Vendors</h2>
       <ul>
         {vendors
           .filter((vendor) => vendor.isApproved)
           .map((vendor) => (
             <li key={vendor._id} className="flex justify-between p-2 border">
-              <p>{vendor.name} ({vendor.email})</p>
-              <button onClick={() => approveVendor(vendor._id, true)} className="bg-green-500 text-white px-4 py-1">
+              <p>
+                {vendor.name} ({vendor.email})
+              </p>
+              <button
+                onClick={() => approveVendor(vendor._id, true)}
+                className="bg-green-500 text-white px-4 py-1"
+              >
                 Approve
               </button>
-              <button onClick={() => approveVendor(vendor._id, false)} className="bg-red-500 text-white px-4 py-1">
+              <button
+                onClick={() => approveVendor(vendor._id, false)}
+                className="bg-red-500 text-white px-4 py-1"
+              >
                 Reject
               </button>
             </li>
@@ -93,11 +110,19 @@ const AdminDashboard = () => {
           .filter((vendor) => !vendor.isApproved)
           .map((vendor) => (
             <li key={vendor._id} className="flex justify-between p-2 border">
-              <p>{vendor.name} ({vendor.email})</p>
-              <button onClick={() => approveVendor(vendor._id, true)} className="bg-green-500 text-white px-4 py-1">
+              <p>
+                {vendor.name} ({vendor.email})
+              </p>
+              <button
+                onClick={() => approveVendor(vendor._id, true)}
+                className="bg-green-500 text-white px-4 py-1"
+              >
                 Approve
               </button>
-              <button onClick={() => approveVendor(vendor._id, false)} className="bg-red-500 text-white px-4 py-1">
+              <button
+                onClick={() => approveVendor(vendor._id, false)}
+                className="bg-red-500 text-white px-4 py-1"
+              >
                 Reject
               </button>
             </li>
@@ -117,7 +142,7 @@ const AdminDashboard = () => {
       <ul>
         {products.map((product) => (
           <li key={product._id} className="p-2 border">
-            {product.name} - ${product.price} 
+            {product.name} - ${product.price}
           </li>
         ))}
       </ul>
