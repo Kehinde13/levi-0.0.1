@@ -8,31 +8,33 @@ import AdminDashboard from "./pages/AdminDashboard";
 import VendorDashboard from "./pages/VendorDashboard";
 import { Logout } from "./auth/Logout";
 import SignUpForm from "./auth/Signup";
+import { CustomerProvider } from "./context/customerContext";
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/basket" element={<Basket />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/logout" element={<Logout />} />
-          <Route path="/signup" element={<SignUpForm />} />
+      <CustomerProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/basket" element={<Basket />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/signup" element={<SignUpForm />} />
 
+            {/* Protected Routes */}
+            <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
 
-          {/* Protected Routes */}
-          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-            <Route path="/admin" element={<AdminDashboard />} />
-          </Route>
+            <Route element={<ProtectedRoute allowedRoles={["vendor"]} />}>
+              <Route path="/vendor" element={<VendorDashboard />} />
+            </Route>
 
-          <Route element={<ProtectedRoute allowedRoles={["vendor"]} />}>
-            <Route path="/vendor" element={<VendorDashboard />} />
-          </Route>
-
-          <Route path="*" element={<h1>Not Found</h1>} />
-        </Routes>
-      </Router>
+            <Route path="*" element={<h1>Not Found</h1>} />
+          </Routes>
+        </Router>
+      </CustomerProvider>
     </AuthProvider>
   );
 }

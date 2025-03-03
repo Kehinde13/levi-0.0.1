@@ -6,6 +6,7 @@ export enum UserRole {
     VENDOR = 'vendor'
 }
 
+
 interface ICartItem {
     productId: string;
     quantity: number;
@@ -43,12 +44,21 @@ export interface ApiProductResponse {
     products: IProduct[];
   }
 
-export type ErrorResponse = {
-    response?: {
-      data?: {
-        message?: string;
-      };
+ export interface LoginResponse {
+    token: string;
+    user: {
+      id: string;
+      name: string;
+      isApproved: boolean;
+      role: string;
     };
-  };
+  }
+
+  export interface Customer {
+    id: string;
+    name: string;
+    isApproved: boolean;
+    role: string;
+  }
   
   

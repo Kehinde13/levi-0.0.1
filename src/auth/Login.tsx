@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { AuthContext } from "../context/AuthContextDefinition";
+import { LoginResponse } from "@/lib/types";
 
 const Login = () => {
   const authContext = useContext(AuthContext);
@@ -11,15 +12,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  interface LoginResponse {
-    token: string;
-    user: {
-      id: string;
-      name: string;
-      isApproved: boolean;
-      role: string;
-    };
-  }
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,7 +35,7 @@ const Login = () => {
       } else if (res.data.user.role === "vendor") {
         navigate("/vendor"); // Redirect to vendor dashboard
       } else {
-        setError("Unauthorized! Please log in as an admin or vendor.");
+        navigate("/"); // Redirect to home page
       }
     } catch {
       setError("Invalid credentials");
