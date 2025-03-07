@@ -1,22 +1,31 @@
-import { useState, ReactNode, useEffect } from "react";
+import { useState, ReactNode, useEffect, useContext } from "react";
 import { BasketContext } from "./BasketContextDefinition";
 import { IProduct } from "./BasketContextDefinition";
+import { CustomerContext } from "../context/customerContextDefinition";
 
-
-// ✅ Provider Component
 export const BasketProvider = ({ children }: { children: ReactNode }) => {
-  const [basket, setBasket] = useState<IProduct[]>(() => {
-    // Load basket from local storage on init
-    const savedBasket = localStorage.getItem("basket");
+  const customerContext = useContext(CustomerContext);
+  const customer = customerContext?.customer;
+
+  // ✅ Load basket based on user ID
+  const getBasketForUser = (userId: string | null) => {
+    if (!userId) return [];
+    const savedBasket = localStorage.getItem(`basket_${userId}`);
     return savedBasket ? JSON.parse(savedBasket) : [];
-  });
+  };
 
-  // Save basket to local storage whenever it changes
+  const [basket, setBasket] = useState<IProduct[]>(() => getBasketForUser(localStorage.getItem("id")));
+
   useEffect(() => {
-    localStorage.setItem("basket", JSON.stringify(basket));
-  }, [basket]);
+    if (customer?.id) {
+      localStorage.setItem(`basket_${customer.id}`, JSON.stringify(basket));
+    }
+  }, [basket, customer?.id]);
 
-  // Function to add a product
+  useEffect(() => {
+    setBasket(getBasketForUser(customer?.id || null));
+  }, [customer?.id]);
+
   const addProductToBasket = (id: string, product: IProduct) => {
     setBasket((prevBasket) => {
       const existingProduct = prevBasket.find((item) => item.id === id);
@@ -29,8 +38,7 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
-  // ✅ Function to update quantity
-   const updateProductQuantity = (id: string, quantity: number) => {
+  const updateProductQuantity = (id: string, quantity: number) => {
     setBasket((prevBasket) =>
       prevBasket.map((item) =>
         item.id === id ? { ...item, quantity: quantity > 0 ? quantity : 1 } : item
@@ -38,7 +46,6 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  // Function to remove a product
   const removeProductFromBasket = (id: string) => {
     setBasket((prevBasket) => prevBasket.filter((item) => item.id !== id));
   };
@@ -49,6 +56,3 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
     </BasketContext.Provider>
   );
 };
-
-
- 

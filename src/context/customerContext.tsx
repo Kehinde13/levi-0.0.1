@@ -11,14 +11,13 @@ export const CustomerProvider = ({ children }: { children: React.ReactNode }) =>
   useEffect(() => {
     const fetchCustomer = async () => {
       const token = localStorage.getItem("token");
-      const id = localStorage.getItem("id");
       if (!token) return;
 
       try {
-        const response = await axios.get<Customer>(`http://localhost:3005/api/users/${id}`, {
+        const response = await axios.get("http://localhost:3005/api/customer/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setCustomer(response.data);
+        setCustomer(response.data as Customer);
       } catch (error) {
         console.error("Error fetching customer data", error);
       }

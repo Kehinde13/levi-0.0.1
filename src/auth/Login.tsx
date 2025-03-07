@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { AuthContext } from "../context/AuthContextDefinition";
+import { CustomerContext } from "../context/customerContextDefinition"; // ✅ Import CustomerContext
 import { LoginResponse } from "@/lib/types";
 
 const Login = () => {
   const authContext = useContext(AuthContext);
+  const customerContext = useContext(CustomerContext); // ✅ Get CustomerContext
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,14 +22,24 @@ const Login = () => {
         email,
         password,
       });
+
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.user.role);
       localStorage.setItem("id", res.data.user.id);
 
-      authContext?.setUserRole(res.data.user.role); // Ensure context updates immediately
-      alert(`Login successful!`);
+      authContext?.setUserRole(res.data.user.role); // ✅ Ensure AuthContext updates immediately
 
+      // ✅ Fetch customer data immediately after login
+      if (customerContext?.setCustomer) {
+        customerContext.setCustomer({
+          id: res.data.user.id,
+          name: res.data.user.name,
+          isApproved: res.data.user.isApproved,
+          role: res.data.user.role,
+        });
+      }
 
+      alert("Login successful!");
 
       if (res.data.user.role === "admin") {
         navigate("/admin"); // Redirect to admin dashboard

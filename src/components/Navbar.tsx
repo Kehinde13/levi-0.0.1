@@ -11,6 +11,8 @@ function Navbar() {
   const customerContext = useContext(CustomerContext);
   const customer = customerContext?.customer;
   const navigate = useNavigate();
+  console.log(customer);
+  
   
   return (
     <nav className="flex justify-between p-5 shadow-xl">
@@ -25,14 +27,14 @@ function Navbar() {
 
       <div className="md:flex items-center space-x-4 hidden">
         <InputWithButton />
-        <div className="flex items-center space-x-4">
+       {customer && <div className="flex items-center space-x-4">
           <span>{customer?.name}</span>
           <button onClick={() => navigate("/logout")} >Logout</button>
-        </div>
+        </div>}
         <Link to={'basket'} className="relative">
-          <span className="absolute rounded-full bg-red-600 text-xs px-1 left-4 bottom-4 text-white">
+          {basket.length > 0 && <span className="absolute rounded-full bg-red-600 text-xs px-1 left-4 bottom-4 text-white">
             {basket.length}
-          </span>
+          </span>}
           <ShoppingCart />
         </Link>
       </div>
