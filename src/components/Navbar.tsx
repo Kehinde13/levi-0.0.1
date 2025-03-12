@@ -18,11 +18,27 @@ function Navbar() {
     <nav className="flex justify-between p-5 shadow-xl">
       <h1 className="text-3xl font-bold">Levi</h1>
 
-      <ul className="hidden md:flex gap-5 mt-2 font-semibold">
-        <li>Home</li>
-        <li>About</li>
-        <li>Contact</li>
-        <li>Account</li>
+      <ul className="md:flex space-x-5 hidden mt-2">
+        <Link to={'/'}>
+          <li className="hover:border-b border-slate-500 cursor-pointer">
+            Home
+          </li>
+        </Link>
+        <Link to={'contact'}>
+          <li className="hover:border-b border-slate-500 cursor-pointer">
+            Contact
+          </li>
+        </Link>
+        <Link to={'about'}>
+          <li className="hover:border-b border-slate-500 cursor-pointer">
+            About
+          </li>
+        </Link>
+        <Link  to={'auth'}>
+          <li className="hover:border-b border-slate-500 cursor-pointer">
+            Account
+          </li>
+        </Link>
       </ul>
 
       <div className="md:flex items-center space-x-4 hidden">

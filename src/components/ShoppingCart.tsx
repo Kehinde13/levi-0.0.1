@@ -1,22 +1,37 @@
 import { useBasket } from "@/hooks/useBasket";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { CustomerContext } from "@/context/customerContextDefinition";
 
 const Basket = () => {
   const { basket, removeProductFromBasket, updateProductQuantity } = useBasket();
+  const customerContext = useContext(CustomerContext);
+  const customer = customerContext ? customerContext.customer : null;
   const [loading, setLoading] = useState(false);
-  
+  const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
+
   const totalPrice = basket.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
+    if (!customer && (!guestName || !guestEmail)) {
+      alert("Please enter your name and email to continue as a guest.");
+      return;
+    }
+
     setLoading(true);
     try {
       const vendorNumber = "+1234567890"; // ✅ Replace with actual vendor number
+
       const orderSummary = basket
         .map((item) => `🛒 ${item.name} x ${item.quantity} - $${item.price * item.quantity}`)
         .join("\n");
 
+      const customerInfo = customer
+        ? `👤 *Customer:* ${customer.name} (${customer.email})`
+        : `👤 *Guest:* ${guestName} (${guestEmail})`;
+
       const message = encodeURIComponent(
-        `📦 *New Order Request!*\n\n${orderSummary}\n\n💰 *Total: $${totalPrice.toFixed(2)}*\n\nPlease confirm my order.`
+        `📦 *New Order Request!*\n\n${orderSummary}\n\n💰 *Total: $${totalPrice.toFixed(2)}*\n\n${customerInfo}\n\nPlease confirm my order.`
       );
 
       window.open(`https://wa.me/${vendorNumber}?text=${message}`, "_blank");
@@ -33,6 +48,27 @@ const Basket = () => {
         <p>Your cart is empty.</p>
       ) : (
         <>
+          {/* Guest User Input Fields */}
+          {!customer && (
+            <div className="mb-4 p-4 border rounded">
+              <h2 className="text-lg font-semibold mb-2">Guest Checkout</h2>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={guestName}
+                onChange={(e) => setGuestName(e.target.value)}
+                className="border p-2 w-full mb-2"
+              />
+              <input
+                type="email"
+                placeholder="Email Address"
+                value={guestEmail}
+                onChange={(e) => setGuestEmail(e.target.value)}
+                className="border p-2 w-full"
+              />
+            </div>
+          )}
+
           <div className="space-y-4">
             {basket.map((item) => (
               <div key={item.id} className="flex items-center justify-between p-4 border-b">

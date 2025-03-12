@@ -24,7 +24,7 @@ export const Logout = () => {
       if (!token) {
         setUserRole(null);
         setCustomer?.(null);
-        navigate("/login");
+        navigate("/auth");
         return;
       }
 
@@ -44,7 +44,7 @@ export const Logout = () => {
         setUserRole(null);
         setCustomer?.(null);
 
-        navigate("/login");
+        navigate("/auth");
       } catch (error) {
         console.error("Logout error:", error);
       }

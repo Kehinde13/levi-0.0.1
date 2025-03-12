@@ -1,104 +1,108 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import googleIcon from "../assets/Icon-Google.png";
 
 const API_URL = "http://localhost:3005/api/auth/register";
 
-interface SignUpFormData {
+type SignUpFormData = {
   name: string;
   email: string;
   password: string;
   confirmPassword: string;
-}
+};
 
-const SignUpForm = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<SignUpFormData>();
+type Prop = {
+  toggleLogin: () => void;
+};
+
+function Signup({ toggleLogin }: Prop) {
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignUpFormData>();
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async (data: SignUpFormData) => {
     setLoading(true);
 
     try {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, role: "customer" }), // Default role
+      const response = await axios.post(API_URL, {
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: "customer", // Default role
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Signup failed");
+      if (response.status !== 201) {
+        throw new Error("Signup failed");
       }
 
       toast.success("Account created successfully! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000);
-    } catch (error) {
-      toast.error((error as Error).message);
+      setTimeout(() => navigate("/auth"), 2000);
+    } catch {
+      toast.error("Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Create an Account</h2>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 md:mt-5 md:w-[80%]">
+      <input
+        type="text"
+        {...register("name", { required: "Name is required" })}
+        placeholder="Name"
+        className="py-3 border-gray-400 border-b"
+      />
+      {errors.name && <p className="text-red-500">{errors.name.message}</p>}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            {...register("name", { required: "Name is required" })}
-            className="w-full p-2 border rounded-md"
-          />
-          {errors.name && <p className="text-red-500">{errors.name.message}</p>}
-        </div>
+      <input
+        type="email"
+        {...register("email", { required: "Email is required" })}
+        placeholder="Email"
+        className="py-3 border-gray-400 border-b bg-white"
+      />
+      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
 
-        <div>
-          <label className="block text-sm font-medium">Email</label>
-          <input
-            type="email"
-            {...register("email", { required: "Email is required" })}
-            className="w-full p-2 border rounded-md"
-          />
-          {errors.email && <p className="text-red-500">{errors.email.message}</p>}
-        </div>
+      <input
+        type="password"
+        {...register("password", { required: "Password is required", minLength: 8 })}
+        placeholder="Password"
+        className="py-3 border-gray-400 border-b"
+      />
+      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
 
-        <div>
-          <label className="block text-sm font-medium">Password</label>
-          <input
-            type="password"
-            {...register("password", { required: "Password is required", minLength: 8 })}
-            className="w-full p-2 border rounded-md"
-          />
-          {errors.password && <p className="text-red-500">{errors.password.message}</p>}
-        </div>
+      <input
+        type="password"
+        {...register("confirmPassword", {
+          required: "Please confirm your password",
+          validate: (value) => value === watch("password") || "Passwords do not match",
+        })}
+        placeholder="Confirm Password"
+        className="py-3 border-gray-400 border-b"
+      />
+      {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
 
-        <div>
-          <label className="block text-sm font-medium">Confirm Password</label>
-          <input
-            type="password"
-            {...register("confirmPassword", {
-              required: "Please confirm your password",
-              validate: (value) => value === watch("password") || "Passwords do not match",
-            })}
-            className="w-full p-2 border rounded-md"
-          />
-          {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
-        </div>
+      <button type="submit" className="bg-[#DB4444] rounded-md py-2 text-white" disabled={loading}>
+        {loading ? "Creating Account..." : "Create Account"}
+      </button>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md"
-          disabled={loading}
-        >
-          {loading ? "Creating Account..." : "Sign Up"}
-        </button>
-      </form>
-    </div>
+      <button type="button" className="rounded-md py-2 flex border border-gray-400 justify-center gap-3">
+        <img src={googleIcon} alt="google icon" />
+        Sign up with Google
+      </button>
+
+      <p className="text-center">
+        Already have an account? <span onClick={toggleLogin} className="cursor-pointer">Log In</span>
+      </p>
+    </form>
   );
-};
+}
 
-export default SignUpForm;
+export default Signup;

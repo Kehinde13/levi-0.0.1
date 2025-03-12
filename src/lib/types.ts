@@ -51,6 +51,7 @@ export interface ApiProductResponse {
       name: string;
       isApproved: boolean;
       role: string;
+      email: string;
     };
   }
 
@@ -59,6 +60,7 @@ export interface ApiProductResponse {
     name: string;
     isApproved: boolean;
     role: string;
+    email: string;
   }
   
   
