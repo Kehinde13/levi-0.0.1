@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://localhost:3005/api";
 
@@ -18,7 +17,13 @@ const VendorDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [editProduct, setEditProduct] = useState<Partial<IProduct> | null>(
+    null
+  );
+  const [editImageFile, setEditImageFile] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
 
   const token = localStorage.getItem("token");
 
@@ -53,8 +58,8 @@ const VendorDashboard = () => {
         setProducts(productsRes.data.products);
       } catch (err) {
         const errorMessage =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Failed to delete product";
+          (err as { response?: { data?: { message?: string } } })?.response
+            ?.data?.message || "Failed to delete product";
         setError(errorMessage);
       }
       setLoading(false);
@@ -69,22 +74,34 @@ const VendorDashboard = () => {
       !newProduct.description ||
       !newProduct.price ||
       !newProduct.category ||
-      !newProduct.stock
+      !newProduct.stock ||
+      !imageFile // ✅ Ensure an image is selected
     ) {
-      alert("Please fill in all fields before adding a product.");
+      alert("Please fill in all fields and select an image.");
       return;
     }
 
     try {
+      const formData = new FormData();
+      formData.append("name", newProduct.name!);
+      formData.append("description", newProduct.description!);
+      formData.append("price", newProduct.price!.toString());
+      formData.append("category", newProduct.category!);
+      formData.append("stock", newProduct.stock!.toString());
+      formData.append("image", imageFile); // ✅ Attach image file
+
       const res = await axios.post<IProduct>(
         `${API_URL}/products/add`,
-        newProduct,
+        formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data", // ✅ Required for file uploads
+          },
         }
       );
 
-      // Optimistically update products without waiting for useEffect
+      // Optimistically update products
       setProducts((prev) => [...prev, res.data]);
 
       alert("Product added successfully!");
@@ -96,40 +113,66 @@ const VendorDashboard = () => {
         price: 0,
         category: "",
         stock: 0,
-        image: "",
       });
+      setImageFile(null);
+      setImagePreview(null);
     } catch (err) {
       const errorMessage =
-      (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-      "Failed to add product";
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to add product";
       alert(errorMessage);
     }
   };
 
-  const updateProduct = async (
-    productId: string,
-    updatedProduct: Partial<IProduct>
-  ) => {
+  const updateProduct = async (productId: string) => {
+    if (
+      !editProduct ||
+      !editProduct.name ||
+      !editProduct.description ||
+      !editProduct.price ||
+      !editProduct.category ||
+      !editProduct.stock
+    ) {
+      alert("Please fill in all fields before updating the product.");
+      return;
+    }
+
     try {
+      const formData = new FormData();
+      formData.append("name", editProduct.name);
+      formData.append("description", editProduct.description);
+      formData.append("price", editProduct.price.toString());
+      formData.append("category", editProduct.category);
+      formData.append("stock", editProduct.stock.toString());
+
+      if (editImageFile) {
+        formData.append("image", editImageFile); // ✅ Attach new image if changed
+      }
+
       const res = await axios.put<IProduct>(
         `${API_URL}/products/${productId}/update`,
-        updatedProduct,
+        formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
         }
       );
 
-      // Optimistically update the product list
+      // ✅ Update the product list optimistically
       setProducts((prev) =>
-        prev.map((product) =>
-          product._id === updatedProduct._id ? res.data : product
-        )
+        prev.map((product) => (product._id === productId ? res.data : product))
       );
+
       alert("Product updated successfully!");
+      setEditProduct(null);
+      setEditImageFile(null);
+      setEditImagePreview(null);
     } catch (err) {
       const errorMessage =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Failed to update product";
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to update product";
       alert(errorMessage);
     }
   };
@@ -144,12 +187,11 @@ const VendorDashboard = () => {
       alert("Product deleted successfully!");
     } catch (err) {
       const errorMessage =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        "Failed to delete product";
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to delete product";
       alert(errorMessage);
     }
   };
-
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -158,23 +200,12 @@ const VendorDashboard = () => {
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Vendor Dashboard</h1>
 
-      <div className="border p-4 mb-4">
-        <h2 className="font-semibold">Vendor Details</h2>
-        <p>Name: {vendor?.name}</p>
-        <p>Email: {vendor?.email}</p>
-        <p>Role: {vendor?.role}</p>
-        <p>Approved: {vendor?.isApproved ? "Yes" : "No"}</p>
-
-        <button
-          onClick={() => navigate("/logout")}
-          className="bg-red-500 text-white px-4 py-2 mt-4"
-        >
-          Logout
-        </button>
+      <div className="p-4">
+        <p className="font-semibold">Welcome, {vendor?.name}!</p>
       </div>
 
       <div className="container mx-auto p-6">
-        <h2 className="text-xl font-semibold mt-6">Manage Product</h2>
+        <h2 className="text-xl font-semibold mt-6">Add Product</h2>
 
         {/* Add Product Form */}
         <div className="space-y-4">
@@ -223,15 +254,29 @@ const VendorDashboard = () => {
               setNewProduct({ ...newProduct, stock: Number(e.target.value) })
             }
           />
+          {/* ✅ Image Upload Input */}
           <input
-            type="text"
-            placeholder="Image URL"
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImageFile(file);
+                setImagePreview(URL.createObjectURL(file)); // ✅ Show preview
+              }
+            }}
             className="border p-2 w-full"
-            value={newProduct.image}
-            onChange={(e) =>
-              setNewProduct({ ...newProduct, image: e.target.value })
-            }
           />
+
+          {/* ✅ Image Preview */}
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Product Preview"
+              className="w-32 h-32 object-cover mt-2"
+            />
+          )}
+
           <button
             onClick={addProduct}
             className="bg-green-500 text-white px-4 py-2 mt-2"
@@ -244,28 +289,29 @@ const VendorDashboard = () => {
         <div className="mt-6">
           <h2 className="text-lg font-semibold">Product List</h2>
           {products.map((product) => (
-            <div
-              key={product._id}
-              className="border p-4 mt-4 flex justify-between"
-            >
-              <div>
-                <h3 className="font-bold">{product.name}</h3>
-                <p>{product.description}</p>
-                <p>Price: ${product.price}</p>
-                <p>Category: {product.category}</p>
-                <p>Stock: {product.stock}</p>
+            <div key={product._id} className="border p-4 mt-4">
+              <h3 className="font-bold">{product.name}</h3>
+              <p>{product.description}</p>
+              <p>Price: ${product.price}</p>
+              <p>Category: {product.category}</p>
+              <p>Stock: {product.stock}</p>
+
+              {/* ✅ Display Existing Product Image */}
+              {product.image && (
                 <img
-                  src={product.image}
+                  src={`http://localhost:3005${product.image}`}
                   alt={product.name}
                   className="w-20 h-20 object-cover mt-2"
                 />
-              </div>
-              <div className="space-y-2">
+              )}
+
+              {/* ✅ Edit & Delete Buttons */}
+              <div className="mt-2 flex gap-2">
                 <button
-                  onClick={() => updateProduct(product._id, { ...newProduct })}
+                  onClick={() => setEditProduct(product)}
                   className="bg-blue-500 text-white px-4 py-2"
                 >
-                  Update
+                  Edit
                 </button>
                 <button
                   onClick={() => deleteProduct(product._id)}
@@ -276,6 +322,104 @@ const VendorDashboard = () => {
               </div>
             </div>
           ))}
+
+          {/* ✅ Show Edit Form if a Product is Selected */}
+          {editProduct && (
+            <div className="p-4 border mt-4">
+              <h2 className="text-xl font-semibold">Edit Product</h2>
+
+              <input
+                type="text"
+                placeholder="Product Name"
+                className="border p-2 w-full"
+                value={editProduct.name}
+                onChange={(e) =>
+                  setEditProduct({ ...editProduct, name: e.target.value })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Description"
+                className="border p-2 w-full"
+                value={editProduct.description}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    description: e.target.value,
+                  })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Price"
+                className="border p-2 w-full"
+                value={editProduct.price}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    price: Number(e.target.value),
+                  })
+                }
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                className="border p-2 w-full"
+                value={editProduct.category}
+                onChange={(e) =>
+                  setEditProduct({ ...editProduct, category: e.target.value })
+                }
+              />
+              <input
+                type="number"
+                placeholder="Stock"
+                className="border p-2 w-full"
+                value={editProduct.stock}
+                onChange={(e) =>
+                  setEditProduct({
+                    ...editProduct,
+                    stock: Number(e.target.value),
+                  })
+                }
+              />
+
+              {/* ✅ Allow Image Upload */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    setEditImageFile(file);
+                    setEditImagePreview(URL.createObjectURL(file)); // ✅ Show preview
+                  }
+                }}
+                className="border p-2 w-full"
+              />
+
+              {/* ✅ Show Image Preview if a New One is Selected */}
+              {editImagePreview && (
+                <img
+                  src={editImagePreview}
+                  alt="Preview"
+                  className="w-32 h-32 object-cover mt-2"
+                />
+              )}
+
+              <button
+                onClick={() => editProduct._id && updateProduct(editProduct._id)}
+                className="bg-green-500 text-white px-4 py-2 mt-2"
+              >
+                Update Product
+              </button>
+              <button
+                onClick={() => setEditProduct(null)}
+                className="bg-gray-500 text-white px-4 py-2 mt-2 ml-2"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

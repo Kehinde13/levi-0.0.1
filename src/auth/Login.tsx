@@ -59,9 +59,10 @@ function Login({ toggleLogin }: Prop) {
       } else {
         navigate("/");
       }
-    } catch {
-      setError("Invalid credentials");
-    } finally {
+    } catch{
+      setError("invalid credentials. Please try again.");
+    }
+    finally {
       setLoading(false);
     }
   };

@@ -5,13 +5,16 @@ import { ShoppingCart } from 'lucide-react'
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CustomerContext } from "@/context/customerContextDefinition";
+import { AuthContext } from "@/context/AuthContextDefinition";
 
 function Navbar() {
   const { basket } = useBasket();
   const customerContext = useContext(CustomerContext);
   const customer = customerContext?.customer;
+  const authContext = useContext(AuthContext);
+  const userRole = authContext?.userRole;
+  const isLoggedIn = !!userRole;
   const navigate = useNavigate();
-  console.log(customer);
   
   
   return (
@@ -34,9 +37,9 @@ function Navbar() {
             About
           </li>
         </Link>
-        <Link  to={'auth'}>
+         <Link to={isLoggedIn ? "/profile" : "/auth"}>
           <li className="hover:border-b border-slate-500 cursor-pointer">
-            Account
+            {isLoggedIn ? "Profile" : "Account"}
           </li>
         </Link>
       </ul>
@@ -44,8 +47,10 @@ function Navbar() {
       <div className="md:flex items-center space-x-4 hidden">
         <InputWithButton />
        {customer && <div className="flex items-center space-x-4">
-          <span>{customer?.name}</span>
-          <button onClick={() => navigate("/logout")} >Logout</button>
+          <span className="w-max">{customer?.name}</span>
+          <button onClick={() => navigate("/logout")} className="bg-[#DB4444] text-white p-2 rounded-md">
+            Logout
+          </button>
         </div>}
         <Link to={'basket'} className="relative">
           {basket.length > 0 && <span className="absolute rounded-full bg-red-600 text-xs px-1 left-4 bottom-4 text-white">

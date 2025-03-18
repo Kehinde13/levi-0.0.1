@@ -12,6 +12,7 @@ import NotFound from "./pages/not-found";
 import Contact from "./pages/Contact"
 import About from "./pages/About"
 import Auth from "./auth/Auth";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
               <Route path="/logout" element={<Logout />} />
 
               {/* Protected Routes */}
+              <Route element={<ProtectedRoute allowedRoles={["admin", "vendor", "customer"]} />}>
+                <Route path="/profile" element={<Profile />} />
+              </Route>
               <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
                 <Route path="/admin" element={<AdminDashboard />} />
               </Route>

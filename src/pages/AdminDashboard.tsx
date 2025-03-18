@@ -94,18 +94,23 @@ const AdminDashboard = () => {
               <p>
                 {vendor.name} ({vendor.email})
               </p>
-              <button
-                onClick={() => approveVendor(vendor._id, true)}
-                className="bg-green-500 text-white px-4 py-1"
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => approveVendor(vendor._id, false)}
-                className="bg-red-500 text-white px-4 py-1"
-              >
-                Reject
-              </button>
+              {
+                vendor.isApproved ? (
+                  <button
+                    onClick={() => approveVendor(vendor._id, false)}
+                    className="bg-red-500 text-white px-4 py-1"
+                  >
+                    Reject
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => approveVendor(vendor._id, true)}
+                    className="bg-green-500 text-white px-4 py-1"
+                  >
+                    Approve
+                  </button>
+                )
+              }
             </li>
           ))}
       </ul>
@@ -119,18 +124,23 @@ const AdminDashboard = () => {
               <p>
                 {vendor.name} ({vendor.email})
               </p>
-              <button
-                onClick={() => approveVendor(vendor._id, true)}
-                className="bg-green-500 text-white px-4 py-1"
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => approveVendor(vendor._id, false)}
-                className="bg-red-500 text-white px-4 py-1"
-              >
-                Reject
-              </button>
+              {
+                vendor.isApproved ? (
+                  <button
+                    onClick={() => approveVendor(vendor._id, false)}
+                    className="bg-red-500 text-white px-4 py-1"
+                  >
+                    Reject
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => approveVendor(vendor._id, true)}
+                    className="bg-green-500 text-white px-4 py-1"
+                  >
+                    Approve
+                  </button>
+                )
+              }
             </li>
           ))}
       </ul>
