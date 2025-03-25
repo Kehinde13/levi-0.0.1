@@ -15,6 +15,7 @@ interface IBasketContext {
   addProductToBasket: (id: string, product: IProduct) => void;
   removeProductFromBasket: (id: string) => void;
   updateProductQuantity: (id: string, quantity: number) => void;
+  clearBasket: () => void;
 }
 
 // ✅ Create Context (No namespace)

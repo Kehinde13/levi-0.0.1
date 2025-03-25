@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
+import { ApiProductResponse, IOrder, IOrderProduct, IProduct, IUser } from "@/lib/types";
 
 const API_URL = "http://localhost:3005/api";
 
@@ -24,8 +24,10 @@ const VendorDashboard = () => {
   );
   const [editImageFile, setEditImageFile] = useState<File | null>(null);
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [vendorOrders, setVendorOrders] = useState<IOrder[]>([]);
 
   const token = localStorage.getItem("token");
+  const id = localStorage.getItem("id");
 
   useEffect(() => {
     const fetchVendorData = async () => {
@@ -56,6 +58,12 @@ const VendorDashboard = () => {
         );
 
         setProducts(productsRes.data.products);
+
+        // Fetch vendor's orders
+        const orderRes = await axios.get<IOrder[]>(`${API_URL}/orders/vendor-orders/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setVendorOrders(orderRes.data);
       } catch (err) {
         const errorMessage =
           (err as { response?: { data?: { message?: string } } })?.response
@@ -66,8 +74,9 @@ const VendorDashboard = () => {
     };
 
     fetchVendorData();
-  }, [token, products]);
+  }, [token, products, id]);
 
+  //add product
   const addProduct = async () => {
     if (
       !newProduct.name ||
@@ -124,6 +133,7 @@ const VendorDashboard = () => {
     }
   };
 
+  //update product
   const updateProduct = async (productId: string) => {
     if (
       !editProduct ||
@@ -177,6 +187,7 @@ const VendorDashboard = () => {
     }
   };
 
+  //delete  product
   const deleteProduct = async (productId: string) => {
     try {
       await axios.delete(`${API_URL}/products/${productId}/delete`, {
@@ -190,6 +201,29 @@ const VendorDashboard = () => {
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message || "Failed to delete product";
       alert(errorMessage);
+    }
+  };
+
+  //confirm order
+  const handleConfirmOrder = async (orderId: string) => {
+    try {
+      await axios.put<IOrder[]>(
+        `${API_URL}/orders/confirm/${orderId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("Order confirmed!");
+      // Refresh orders
+      setVendorOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId ? { ...order, status: "Confirmed" } : order
+        )
+      );
+    } catch (err) {
+      console.error("Error confirming order", err);
+      alert("Failed to confirm order.");
     }
   };
 
@@ -407,7 +441,9 @@ const VendorDashboard = () => {
               )}
 
               <button
-                onClick={() => editProduct._id && updateProduct(editProduct._id)}
+                onClick={() =>
+                  editProduct._id && updateProduct(editProduct._id)
+                }
                 className="bg-green-500 text-white px-4 py-2 mt-2"
               >
                 Update Product
@@ -419,6 +455,38 @@ const VendorDashboard = () => {
                 Cancel
               </button>
             </div>
+          )}
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-lg font-semibold mb-4">Incoming Orders</h2>
+          {loading ? (
+            <p>Loading orders...</p>
+          ) : vendorOrders.length === 0 ? (
+            <p>No orders found.</p>
+          ) : (
+            vendorOrders.map((order) => (
+              <div key={order._id} className="border p-4 mb-4">
+                <p className="font-semibold">Order #{order._id}</p>
+                <p>Status: {order.status}</p>
+                <p>Total: ${order.totalAmount}</p>
+                <ul className="text-sm mt-2">
+                  {order.products.map((prod: IOrderProduct, index: number) => (
+                    <li key={index}>
+                      • {prod.productId || "Product"} x {prod.quantity}
+                    </li>
+                  ))}
+                </ul>
+                {order.status !== "Confirmed" && (
+                  <button
+                    onClick={() => handleConfirmOrder(order._id)}
+                    className="bg-blue-500 text-white px-4 py-2 mt-2"
+                  >
+                    Confirm Order
+                  </button>
+                )}
+              </div>
+            ))
           )}
         </div>
       </div>

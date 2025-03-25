@@ -1,40 +1,44 @@
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "@/context/AuthContextDefinition";
+import { IOrder, IOrderProduct, user } from "@/lib/types";
 
 const API_URL = "http://localhost:3005/api";
 
 const Profile = () => {
-const authContext = useContext(AuthContext);
-const userRole = authContext?.userRole;
-const [user, setUser] = useState({ name: "", email: "", role: "", password: "" });
-const [orders, setOrders] = useState([]);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState("");
+  const authContext = useContext(AuthContext);
+  const userRole = authContext?.userRole;
+  const [user, setUser] = useState({ name: "", email: "", role: "", password: "" });
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [orders, setOrders] = useState<IOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-const token = localStorage.getItem("token");
-const id = localStorage.getItem("id");
+  const token = localStorage.getItem("token");
+  const id = localStorage.getItem("id");
 
-  // ✅ Fetch user profile
   useEffect(() => {
     const fetchUserProfile = async () => {
-      
       if (!token) return;
+
       try {
-        const res = await axios.get(`${API_URL}/users/profile/${id}`, {
+        const res = await axios.get<user>(`${API_URL}/users/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
+
         if (res.data.role === "customer") fetchOrderHistory();
-      } catch (err) {
+      } catch {
         setError("Failed to load user profile.");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     const fetchOrderHistory = async () => {
       try {
-        const res = await axios.get(`${API_URL}/user-orders/${id}`, {
+        const res = await axios.get<IOrder[]>(`${API_URL}/orders/user-orders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOrders(res.data);
@@ -44,21 +48,33 @@ const id = localStorage.getItem("id");
     };
 
     fetchUserProfile();
+    fetchOrderHistory();
   }, [token, id]);
 
-  // ✅ Handle Input Change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  // ✅ Handle Profile Update
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value);
+  };
+
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (user.password && user.password !== confirmPassword) {
+      setPasswordError("Passwords do not match!");
+      return;
+    }
+
+    setPasswordError("");
+
     try {
       await axios.put(`${API_URL}/users/profile/update/${id}`, user, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Profile updated successfully!");
+      setConfirmPassword("");
     } catch {
       alert("Failed to update profile.");
     }
@@ -69,9 +85,8 @@ const id = localStorage.getItem("id");
 
   return (
     <div className="max-w-lg mx-auto p-6">
-      <h1 className="text-2xl font-bold">User Profile</h1>
+      <h1 className="text-2xl font-bold mb-4">User Profile</h1>
 
-      {/* ✅ Profile Edit Form */}
       <form onSubmit={handleUpdate} className="space-y-4">
         <input
           type="text"
@@ -96,22 +111,44 @@ const id = localStorage.getItem("id");
           className="border p-2 w-full"
           placeholder="New Password (leave blank if unchanged)"
         />
+        <input
+          type="password"
+          name="confirmPassword"
+          value={confirmPassword}
+          onChange={handleConfirmPasswordChange}
+          className="border p-2 w-full"
+          placeholder="Confirm New Password"
+        />
+        {passwordError && <p className="text-red-500">{passwordError}</p>}
+
         <button type="submit" className="bg-blue-500 text-white p-2 w-full">
           Update Profile
         </button>
       </form>
 
-      {/* ✅ Order History for Customers */}
       {userRole === "customer" && (
-        <div className="mt-6">
-          <h2 className="text-xl font-bold">Order History</h2>
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-2">Order History</h2>
           {orders.length === 0 ? (
             <p>No orders found.</p>
           ) : (
-            <ul className="mt-2">
-              {orders.map((order: any) => (
-                <li key={order._id} className="border p-2 mt-2">
-                  Order #{order._id} - ${order.totalAmount} - {order.status}
+            <ul className="space-y-4">
+              {orders.map((order: IOrder) => (
+                <li key={order._id} className="border p-4 rounded">
+                  <div className="font-semibold mb-1">
+                    Order #{order._id.slice(-6).toUpperCase()} -{" "}
+                    <span className="text-sm text-gray-500">{order.status}</span>
+                  </div>
+                  <ul className="text-sm text-gray-700">
+                    {order.products.map((p: IOrderProduct, index: number) => (
+                      <li key={index}>
+                        {p.productId || "Unknown Product"} x {p.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm mt-2">
+                    Total: <strong>${order.totalAmount.toFixed(2)}</strong>
+                  </p>
                 </li>
               ))}
             </ul>

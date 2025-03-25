@@ -42,7 +42,7 @@ function Login({ toggleLogin }: Prop) {
 
       // Update Customer Context
       customerContext?.setCustomer({
-        id: res.data.user.id,
+        _id: res.data.user.id,
         name: res.data.user.name,
         isApproved: res.data.user.isApproved,
         role: res.data.user.role,

@@ -60,7 +60,15 @@ function Navbar() {
         </Link>
       </div>
 
-      <LandingPageDrawer />
+      <div className="md:hidden flex gap-3 relative">
+        <Link to={'basket'} className="mt-1">
+          {basket.length > 0 && <span className="absolute rounded-full bg-red-600 text-xs px-1 left-4 bottom-4 text-white">
+            {basket.length}
+          </span>}
+          <ShoppingCart />
+        </Link>
+        <LandingPageDrawer />
+      </div>
     </nav>
   );
 }

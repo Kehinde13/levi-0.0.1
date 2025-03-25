@@ -56,11 +56,37 @@ export interface ApiProductResponse {
   }
 
   export interface Customer {
-    id: string;
+    _id: string;
     name: string;
     isApproved: boolean;
     role: string;
     email: string;
   }
+
+  export interface user {
+    name: string;
+    email: string;
+    role: string;
+    password: string;
+  }
+
+  export interface IOrderProduct {
+    productId: string;
+    quantity: number;
+    _id: string;
+  }
+  
+  export interface IOrder {
+    _id: string;
+    user: string;
+    products: IOrderProduct[];
+    totalAmount: number;
+    status: string;
+    trackingNumber: string;
+    createdAt: string; // ISO date string
+    updatedAt: string;
+    __v: number;
+  }
+  
   
   

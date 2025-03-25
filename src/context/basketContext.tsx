@@ -7,24 +7,29 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
   const customerContext = useContext(CustomerContext);
   const customer = customerContext?.customer;
 
-  // ✅ Load basket based on user ID
-  const getBasketForUser = (userId: string | null) => {
-    if (!userId) return [];
-    const savedBasket = localStorage.getItem(`basket_${userId}`);
+  const userKey = customer?._id ? `basket_${customer._id}` : "guest_basket";
+
+  // ✅ Load basket from localStorage using userKey
+  const getBasketForUser = (key: string) => {
+    const savedBasket = localStorage.getItem(key);
     return savedBasket ? JSON.parse(savedBasket) : [];
   };
 
-  const [basket, setBasket] = useState<IProduct[]>(() => getBasketForUser(localStorage.getItem("id")));
+  const [basket, setBasket] = useState<IProduct[]>(() =>
+    getBasketForUser(userKey)
+  );
 
+  // ✅ Sync basket to localStorage when it changes
   useEffect(() => {
-    if (customer?.id) {
-      localStorage.setItem(`basket_${customer.id}`, JSON.stringify(basket));
-    }
-  }, [basket, customer?.id]);
+    localStorage.setItem(userKey, JSON.stringify(basket));
+  }, [basket, userKey]);
 
+  // ✅ Load correct basket when user logs in/out
   useEffect(() => {
-    setBasket(getBasketForUser(customer?.id || null));
-  }, [customer?.id]);
+    const key = customer?._id ? `basket_${customer._id}` : "guest_basket";
+    const storedBasket = getBasketForUser(key);
+    setBasket(storedBasket);
+  }, [customer?._id]);
 
   const addProductToBasket = (id: string, product: IProduct) => {
     setBasket((prevBasket) => {
@@ -50,8 +55,21 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
     setBasket((prevBasket) => prevBasket.filter((item) => item.id !== id));
   };
 
+  const clearBasket = () => {
+    setBasket([]);
+    localStorage.removeItem(userKey);
+  };
+
   return (
-    <BasketContext.Provider value={{ basket, addProductToBasket, removeProductFromBasket, updateProductQuantity }}>
+    <BasketContext.Provider
+      value={{
+        basket,
+        addProductToBasket,
+        removeProductFromBasket,
+        updateProductQuantity,
+        clearBasket,
+      }}
+    >
       {children}
     </BasketContext.Provider>
   );
