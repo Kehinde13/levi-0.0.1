@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ProductsCarousel } from "./ProductsCarousel";
 import { ApiProductResponse, IProduct } from "@/lib/types";
+import loader from "@/assets/Animation Fire GIF by Chris Gannon.gif";
 
-const API_URL = "http://localhost:3005/api/products"
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 function Products() {
@@ -14,7 +15,7 @@ function Products() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get<ApiProductResponse>(API_URL); 
+            const response = await axios.get<ApiProductResponse>(`${API_URL}/products`); 
                 setProducts(response.data.products); 
             } catch (err) {
                 setError("Failed to load products");
@@ -38,7 +39,7 @@ function Products() {
             <h1 className="md:text-4xl text-2xl font-semibold">Explore Our Products</h1>
 
             {/* Display Loading State */}
-            {loading && <p>Loading products...</p>}
+            {loading && <img src={loader} alt="Loading..." className="w-full" />}
 
             {/* Display Error if API Fails */}
             {error && <p className="text-red-500">{error}</p>}

@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import { CustomerContext } from "@/context/customerContextDefinition";
 import axios from "axios";
 
-const API_URL = "http://localhost:3005/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Basket = () => {
   const { basket, removeProductFromBasket, updateProductQuantity, clearBasket } = useBasket();

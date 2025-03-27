@@ -2,8 +2,9 @@ import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "@/context/AuthContextDefinition";
 import { IOrder, IOrderProduct, user } from "@/lib/types";
+import loader from "@/assets/Animation Fire GIF by Chris Gannon.gif";
 
-const API_URL = "http://localhost:3005/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const Profile = () => {
   const authContext = useContext(AuthContext);
@@ -80,7 +81,7 @@ const Profile = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <img src={loader} alt="loading" className="w-full" />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

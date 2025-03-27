@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { ApiProductResponse, IProduct, IUser } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
+import loader from "@/assets/Animation Fire GIF by Chris Gannon.gif";
 
-const API_URL = "http://localhost:3005/api";
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const AdminDashboard = () => {
@@ -12,7 +12,6 @@ const AdminDashboard = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -71,26 +70,20 @@ const AdminDashboard = () => {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <img src={loader} alt="loading" className="w-full" />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Admin Dashboard</h1>
 
-      <button
-        onClick={() => navigate("/logout")} 
-        className="bg-red-500 text-white px-4 py-2 mt-4"
-      >
-        Logout
-      </button>
 
       <h2 className="text-xl font-semibold mt-6">Approved Vendors</h2>
       <ul>
         {vendors
           .filter((vendor) => vendor.isApproved)
           .map((vendor) => (
-            <li key={vendor._id} className="flex justify-between p-2 border">
+            <li key={vendor._id} className="flex justify-between p-2">
               <p>
                 {vendor.name} ({vendor.email})
               </p>
@@ -98,14 +91,14 @@ const AdminDashboard = () => {
                 vendor.isApproved ? (
                   <button
                     onClick={() => approveVendor(vendor._id, false)}
-                    className="bg-red-500 text-white px-4 py-1"
+                    className="bg-red-500 text-white rounded-md px-2 py-1"
                   >
                     Reject
                   </button>
                 ) : (
                   <button
                     onClick={() => approveVendor(vendor._id, true)}
-                    className="bg-green-500 text-white px-4 py-1"
+                    className="bg-green-500 text-white rounded-md px-2 py-1"
                   >
                     Approve
                   </button>

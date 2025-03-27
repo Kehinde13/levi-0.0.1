@@ -11,6 +11,8 @@ type Prop = {
   toggleLogin: () => void;
 };
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Login({ toggleLogin }: Prop) {
   const authContext = useContext(AuthContext);
   const customerContext = useContext(CustomerContext);
@@ -27,7 +29,7 @@ function Login({ toggleLogin }: Prop) {
     setLoading(true);
 
     try {
-      const res = await axios.post<LoginResponse>("http://localhost:3005/api/auth/login", {
+      const res = await axios.post<LoginResponse>(`${API_URL}/auth/login`,{
         email,
         password,
       });

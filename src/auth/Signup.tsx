@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import googleIcon from "../assets/Icon-Google.png";
 
-const API_URL = "http://localhost:3005/api/auth/register";
+const API_URL = import.meta.env.VITE_API_URL;
 
 type SignUpFormData = {
   name: string;

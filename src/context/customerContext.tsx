@@ -3,6 +3,7 @@ import axios from "axios";
 import { CustomerContext } from "./customerContextDefinition";
 import { Customer } from "@/lib/types";
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 export const CustomerProvider = ({ children }: { children: React.ReactNode }) => {
@@ -15,7 +16,7 @@ export const CustomerProvider = ({ children }: { children: React.ReactNode }) =>
       if (!token) return;
 
       try {
-        const response = await axios.get(`http://localhost:3005/api/users/${id}`, {
+        const response = await axios.get(`${API_URL}/users/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCustomer(response.data as Customer);
