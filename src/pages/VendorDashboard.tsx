@@ -334,7 +334,7 @@ const VendorDashboard = () => {
               {/* ✅ Display Existing Product Image */}
               {product.image && (
                 <img
-                  src={`http://localhost:3005${product.image}`}
+                  src={`https://levi-backend.vercel.app${product.image}`}
                   alt={product.name}
                   className="w-20 h-20 object-cover mt-2"
                 />

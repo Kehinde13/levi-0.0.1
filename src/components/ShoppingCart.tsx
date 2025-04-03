@@ -112,7 +112,7 @@ const Basket = () => {
               <div key={item.id} className="md:flex items-center justify-between p-4 border-b">
                 <div className="flex items-center gap-4">
                   <img
-                    src={`http://localhost:3005${item.image}`}
+                    src={`https://levi-backend.vercel.app${item.image}`}
                     alt={item.name}
                     className="w-20 h-20 object-cover rounded"
                   />
