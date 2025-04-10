@@ -37,7 +37,7 @@ function ProductsCard({ product }: Prop) {
   return (
     <Card className="flex overflow-hidden flex-col">
       <div className="relative w-full h-auto aspect-video">
-        <img src={`https://levi-backend.vercel.app${product.image}`} width={400} height={200} alt={product.name} />
+        <img src={product.image || '/placeholder.png'} width={400} height={200} alt={product.name} />
       </div>
       <CardHeader>
         <CardTitle>{product.name}</CardTitle>

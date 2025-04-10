@@ -5,6 +5,11 @@ import loader from "@/assets/Animation Fire GIF by Chris Gannon.gif";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+// Define the expected response type
+interface ImageUploadResponse {
+  imageUrl: string;
+}
+
 const VendorDashboard = () => {
   const [vendor, setVendor] = useState<IUser | null>(null);
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -77,7 +82,6 @@ const VendorDashboard = () => {
     fetchVendorData();
   }, [token, products, id]);
 
-  //add product
   const addProduct = async () => {
     if (
       !newProduct.name ||
@@ -85,37 +89,53 @@ const VendorDashboard = () => {
       !newProduct.price ||
       !newProduct.category ||
       !newProduct.stock ||
-      !imageFile // ✅ Ensure an image is selected
+      !imageFile
     ) {
       alert("Please fill in all fields and select an image.");
       return;
     }
-
+  
     try {
-      const formData = new FormData();
-      formData.append("name", newProduct.name!);
-      formData.append("description", newProduct.description!);
-      formData.append("price", newProduct.price!.toString());
-      formData.append("category", newProduct.category!);
-      formData.append("stock", newProduct.stock!.toString());
-      formData.append("image", imageFile); // ✅ Attach image file
-
-      const res = await axios.post<IProduct>(
-        `${API_URL}/products/add`,
-        formData,
+      // Step 1: Upload image file to Vercel Blob
+      const imageForm = new FormData();
+      imageForm.append("image", imageFile);
+  
+      const imageUploadRes = await axios.post<ImageUploadResponse>(
+        `${API_URL}/products/upload`,
+        imageForm,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // ✅ Required for file uploads
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`
           },
         }
       );
-
+  
+      const imageUrl = imageUploadRes.data.imageUrl;
+  
+      // Step 2: Post new product with image URL
+      const res = await axios.post<IProduct>(
+        `${API_URL}/products/add`,
+        {
+          name: newProduct.name,
+          description: newProduct.description,
+          price: newProduct.price,
+          category: newProduct.category,
+          stock: newProduct.stock,
+          image: imageUrl, // ✅ Use URL instead of file
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
       // Optimistically update products
       setProducts((prev) => [...prev, res.data]);
-
+  
       alert("Product added successfully!");
-
+  
       // Reset form
       setNewProduct({
         name: "",
@@ -133,6 +153,7 @@ const VendorDashboard = () => {
       alert(errorMessage);
     }
   };
+  
 
   //update product
   const updateProduct = async (productId: string) => {
@@ -147,35 +168,51 @@ const VendorDashboard = () => {
       alert("Please fill in all fields before updating the product.");
       return;
     }
-
+  
     try {
-      const formData = new FormData();
-      formData.append("name", editProduct.name);
-      formData.append("description", editProduct.description);
-      formData.append("price", editProduct.price.toString());
-      formData.append("category", editProduct.category);
-      formData.append("stock", editProduct.stock.toString());
-
+      let imageUrl = editProduct.image || "";
+  
+      // 🔁 Step 1: If new image file is selected, upload it
       if (editImageFile) {
-        formData.append("image", editImageFile); // ✅ Attach new image if changed
-      }
+        const imageForm = new FormData();
+        imageForm.append("image", editImageFile);
 
+        const uploadRes = await axios.post<ImageUploadResponse>(
+          `${API_URL}/products/upload`,
+          imageForm,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+
+        imageUrl = uploadRes.data.imageUrl;
+      }
+  
+      // 🔁 Step 2: Send updated product data
+      const updatedData = {
+        name: editProduct.name,
+        description: editProduct.description,
+        price: editProduct.price,
+        category: editProduct.category,
+        stock: editProduct.stock,
+        image: imageUrl,
+      };
+  
       const res = await axios.put<IProduct>(
         `${API_URL}/products/${productId}/update`,
-        formData,
+        updatedData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
           },
         }
       );
-
+  
       // ✅ Update the product list optimistically
       setProducts((prev) =>
         prev.map((product) => (product._id === productId ? res.data : product))
       );
-
+  
       alert("Product updated successfully!");
       setEditProduct(null);
       setEditImageFile(null);
@@ -187,6 +224,7 @@ const VendorDashboard = () => {
       alert(errorMessage);
     }
   };
+  
 
   //delete  product
   const deleteProduct = async (productId: string) => {
@@ -334,7 +372,7 @@ const VendorDashboard = () => {
               {/* ✅ Display Existing Product Image */}
               {product.image && (
                 <img
-                  src={`https://levi-backend.vercel.app${product.image}`}
+                  src={product.image || '/placeholder.png'}
                   alt={product.name}
                   className="w-20 h-20 object-cover mt-2"
                 />
