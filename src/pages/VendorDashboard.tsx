@@ -181,7 +181,10 @@ const VendorDashboard = () => {
           `${API_URL}/products/upload`,
           imageForm,
           {
-            headers: { "Content-Type": "multipart/form-data" },
+            headers: { 
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`
+            },
           }
         );
 
