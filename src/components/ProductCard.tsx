@@ -19,10 +19,7 @@ type Prop = {
 function ProductsCard({ product }: Prop) {
 
   const {addProductToBasket} = useBasket()
-  
-  function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
-  }
+
 
   const handleAddToBasket = () => {
     addProductToBasket(product._id, {
@@ -35,23 +32,28 @@ function ProductsCard({ product }: Prop) {
   };
 
   return (
-    <Card className="flex overflow-hidden flex-col">
-      <div className="relative w-full h-auto aspect-video">
-        <img src={product.image || '/placeholder.png'} width={400} height={200} alt={product.name} />
-      </div>
-      <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
-        <CardDescription> {formatCurrency(product.price / 100)} </CardDescription>
-      </CardHeader>
-      <CardContent className="flex-grow">
-        <p className="line-clamp-4">{product.description}</p> 
-      </CardContent>
-      <CardFooter>
-        <Button size="lg" className="w-full" onClick={() => handleAddToBasket()}>
-        Add To Cart{/* <Link href={`/products/${product.id}/purchase`}></Link> */}
-        </Button>
-      </CardFooter>
-    </Card>
+    <Card className="flex flex-col h-full">
+    <div className="relative w-full aspect-video">
+      <img
+        src={product.image || '/placeholder.png'}
+        alt={product.name}
+        className="object-cover w-full h-full"
+      />
+    </div>
+    <CardHeader>
+      <CardTitle>{product.name}</CardTitle>
+      <CardDescription>${product.price}</CardDescription>
+    </CardHeader>
+    <CardContent className="flex-grow">
+      <p className="line-clamp-4 min-h-[2rem]">{product.description}</p>
+    </CardContent>
+    <CardFooter>
+      <Button size="lg" className="w-full" onClick={() => handleAddToBasket()}>
+        Add To Cart
+      </Button>
+    </CardFooter>
+  </Card>
+  
   );
 }
 

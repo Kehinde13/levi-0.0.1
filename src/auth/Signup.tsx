@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import axios from "axios";
-import googleIcon from "../assets/Icon-Google.png";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -93,10 +92,6 @@ function Signup({ toggleLogin }: Prop) {
         {loading ? "Creating Account..." : "Create Account"}
       </button>
 
-      <button type="button" className="rounded-md py-2 flex border border-gray-400 justify-center gap-3">
-        <img src={googleIcon} alt="google icon" />
-        Sign up with Google
-      </button>
 
       <p className="text-center">
         Already have an account? <span onClick={toggleLogin} className="cursor-pointer">Log In</span>

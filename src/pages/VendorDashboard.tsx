@@ -307,7 +307,7 @@ const VendorDashboard = () => {
             type="number"
             placeholder="Price"
             className="border p-2 w-full"
-            value={newProduct.price}
+            value={newProduct.price === 0 ? '' : newProduct.price}
             onChange={(e) =>
               setNewProduct({ ...newProduct, price: Number(e.target.value) })
             }
@@ -325,7 +325,7 @@ const VendorDashboard = () => {
             type="number"
             placeholder="Stock"
             className="border p-2 w-full"
-            value={newProduct.stock}
+            value={newProduct.stock === 0 ? '' : newProduct.stock}
             onChange={(e) =>
               setNewProduct({ ...newProduct, stock: Number(e.target.value) })
             }

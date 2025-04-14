@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import googleIcon from "../assets/Icon-Google.png";
 
 import { AuthContext } from "../context/AuthContextDefinition";
 import { CustomerContext } from "../context/customerContextDefinition";
@@ -105,13 +104,7 @@ function Login({ toggleLogin }: Prop) {
           {loading ? "Logging in..." : "Log In"}
         </button>
 
-        <button
-          type="button"
-          className="rounded-md py-2 flex border md:px-6 p-2 border-gray-400 justify-center gap-3"
-        >
-          <img src={googleIcon} alt="google icon" />
-          Log In with Google
-        </button>
+
       </div>
     </form>
   );
