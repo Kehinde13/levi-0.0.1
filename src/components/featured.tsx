@@ -1,7 +1,7 @@
-import PS5 from "../assets/ps5-slim-goedkope-playstation_large 1.png";
-import womenFashion from "../assets/attractive-woman-wearing-hat-posing-black-background 1.png";
-import speaker from "../assets/69-694768_amazon-echo-png-clipart-transparent-amazon-echo-png 1.png";
-import perfume from "../assets/Frame 706.png";
+import PS5 from "../assets/ps5-slim-goedkope-playstation_large1.png";
+import womenFashion from "../assets/attractive-woman-wearing-hat-posing-black-background1.png";
+import speaker from "../assets/69-694768_amazon-echo-png-clipart-transparent-amazon-echo-png1.png";
+import perfume from "../assets/Frame706.png";
 
 function Featured() {
   return (

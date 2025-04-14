@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import jblSpeaker from "../assets/Frame 694.png"
+import jblSpeaker from "../assets/Frame694.png"
 
 type TimeLeft = {
   days: number;

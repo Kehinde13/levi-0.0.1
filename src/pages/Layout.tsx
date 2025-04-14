@@ -7,7 +7,7 @@ const Layout = () => {
     <div>
       <Navbar />
       <main className="min-h-screen">
-        <Outlet /> {/* ✅ This will render the current page inside the layout */}
+        <Outlet /> 
       </main>
       <Footer />
     </div>

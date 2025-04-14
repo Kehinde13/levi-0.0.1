@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ProductsCarousel } from "./ProductsCarousel";
 import { ApiProductResponse, IProduct } from "@/lib/types";
-import loader from "@/assets/Animation Fire GIF by Chris Gannon.gif";
+import loader from "@/assets/AnimationFireGIFbyChrisGannon.gif";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
