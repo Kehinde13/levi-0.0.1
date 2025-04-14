@@ -1,13 +1,13 @@
-import sideimg from "../assets/Sideimage(2).png";
-import service3 from "../assets/Services(3).png";
-import service4 from "../assets/Services(4).png";
-import service5 from "../assets/Services(5).png";
+import sideimg from "../assets/Sideimage2.png";
+import service3 from "../assets/Services3.png";
+import service4 from "../assets/Services4.png";
+import service5 from "../assets/Services5.png";
 import photo4 from "../assets/Frame874.png";
 import photo5 from "../assets/Frame875.png";
 import photo6 from "../assets/Frame876.png";
-import icon1 from "../assets/icon-instagram(1).png";
-import icon2 from "../assets/Icon-Twitter(1).png";
-import icon3 from "../assets/Icon-Linkedin(1).png";
+import icon1 from "../assets/icon-instagram1.png";
+import icon2 from "../assets/Icon-Twitter1.png";
+import icon3 from "../assets/Icon-Linkedin1.png";
 import Services from "../components/Services";
 
 function page() {

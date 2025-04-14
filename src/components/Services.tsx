@@ -1,6 +1,6 @@
-import delivery from "../assets/Services(2).png";
+import delivery from "../assets/Services2.png";
 import customerCare from "../assets/Services.png";
-import guarantee from "../assets/Services(1).png";
+import guarantee from "../assets/Services1.png";
 
 function Services() {
   return (
