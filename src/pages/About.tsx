@@ -1,4 +1,4 @@
-import sideimg from "../assets/Sideimage2.png";
+import sideimg from "../assets/sideimage2.png";
 import service3 from "../assets/Services3.png";
 import service4 from "../assets/Services4.png";
 import service5 from "../assets/Services5.png";
