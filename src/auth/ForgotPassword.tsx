@@ -12,10 +12,13 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const res = await axios.post('/api/auth/forgot-password', { email });
+      const res = await axios.post<{ message: string }>('/api/auth/forgot-password', { email });
       setMessage(res.data.message);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong.');
+    } catch (err) {
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to add product";
+      setError(errorMessage);
     }
   };
 

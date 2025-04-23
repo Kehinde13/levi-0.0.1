@@ -15,13 +15,16 @@ const ResetPassword = () => {
     setError('');
 
     try {
-      const res = await axios.post(`/api/auth/reset-password/${token}`, {
+      const res = await axios.post<{ message: string }>(`/api/auth/reset-password/${token}`, {
         newPassword,
       });
       setMessage(res.data.message);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong.');
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to add product";
+      setError(errorMessage);
     }
   };
 
