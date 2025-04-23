@@ -13,6 +13,8 @@ import Contact from "./pages/Contact"
 import About from "./pages/About"
 import Auth from "./auth/Auth";
 import Profile from "./pages/Profile";
+import ResetPassword from "./auth/ResetPassword";
+import ForgotPassword from "./auth/ForgotPassword";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute allowedRoles={["admin", "vendor", "customer"]} />}>
