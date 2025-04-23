@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { AuthContext } from "../context/AuthContextDefinition";
@@ -92,7 +92,7 @@ function Login({ toggleLogin }: Prop) {
         <p onClick={toggleLogin} className="cursor-pointer">
           Sign Up
         </p>
-        <p className="text-[#DB4444] cursor-pointer">Forgot Password?</p>
+        <Link to="/forgot-password" className="text-[#DB4444] cursor-pointer">Forgot Password?</Link>
       </div>
 
       <div className="flex flex-col md:flex-row gap-2 justify-between">
