@@ -37,7 +37,7 @@ function ProductsCard({ product }: Prop) {
       <img
         src={product.image || '/placeholder.png'}
         alt={product.name}
-        className="object-cover w-full h-full"
+        className="object-cover md:w-full h-full w-fit"
       />
     </div>
     <CardHeader>
