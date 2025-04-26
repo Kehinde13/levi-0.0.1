@@ -5,6 +5,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContextDefinition";
 import { CustomerContext } from "../context/customerContextDefinition";
 import { LoginResponse } from "@/lib/types";
+import { toast } from "react-toastify";
 
 type Prop = {
   toggleLogin: () => void;
@@ -50,7 +51,7 @@ function Login({ toggleLogin }: Prop) {
         email: res.data.user.email,
       });
 
-      alert("Login successful!");
+      toast.success("Login successful!");
 
       // Redirect user based on role
       if (res.data.user.role === "admin") {
@@ -62,6 +63,7 @@ function Login({ toggleLogin }: Prop) {
       }
     } catch{
       setError("invalid credentials. Please try again.");
+      toast.error("invalid credentials. Please try again.");
     }
     finally {
       setLoading(false);

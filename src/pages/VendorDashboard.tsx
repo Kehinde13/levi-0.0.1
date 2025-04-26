@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { ApiProductResponse, IOrder, IOrderProduct, IProduct, IUser } from "@/lib/types";
 import loader from "@/assets/AnimationFireGIFbyChrisGannon.gif";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -146,11 +147,12 @@ const VendorDashboard = () => {
       });
       setImageFile(null);
       setImagePreview(null);
-    } catch (err) {
-      const errorMessage =
+    } catch {
+      /* const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message || "Failed to add product";
-      alert(errorMessage);
+      alert(errorMessage); */
+      toast.error("Failed to add product")
     }
   };
   

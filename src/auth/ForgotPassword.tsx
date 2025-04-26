@@ -1,26 +1,28 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  /* const [error, setError] = useState(''); */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
-    setError('');
+    /* setError(''); */
 
     try {
       const res = await axios.post<{ message: string }>(`${API_URL}/auth/forgot-password`, { email });
       setMessage(res.data.message);
-    } catch (err) {
-      const errorMessage =
+    } catch {
+      /* const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message || "Invalid email address";
-      setError(errorMessage);
+      setError(errorMessage); */
+      toast.error("Invalid email address")
     }
   };
 
@@ -45,7 +47,6 @@ const ForgotPassword = () => {
           </button>
         </form>
         {message && <p className="text-green-600 mt-4">{message}</p>}
-        {error && <p className="text-red-600 mt-4">{error}</p>}
       </div>
     </div>
   );

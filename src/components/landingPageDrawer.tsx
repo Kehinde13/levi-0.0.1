@@ -44,9 +44,12 @@ function LandingPageDrawer() {
           </li>
         </Link>
         </ul>
-        <button onClick={() => navigate("/logout")} className="my-2 bg-[#DB4444] text-white py-2 px-4 rounded-md">
+        {
+          isLoggedIn &&
+          <button onClick={() => navigate("/logout")} className="my-2 bg-[#DB4444] text-white py-2 px-4 rounded-md">
           Logout
-        </button>
+         </button>
+        }
       </DrawerContent>
     </Drawer>
   );

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,12 +10,12 @@ const ResetPassword = () => {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  /* const [error, setError] = useState(''); */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMessage('');
-    setError('');
+    /* setError(''); */
 
     try {
       const res = await axios.post<{ message: string }>(`${API_URL}/auth/reset-password/${token}`, {
@@ -22,12 +23,12 @@ const ResetPassword = () => {
       });
       setMessage(res.data.message);
       setTimeout(() => navigate('/auth'), 3000);
-    } catch (err) {
-      const errorMessage =
+    } catch {
+     /* const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
           ?.message || "Failed to send rest password email";
-      setError(errorMessage);
-      console.log(errorMessage)
+       setError(errorMessage); */
+      toast.error("Failed to send rest password email")
     }
   };
 
@@ -52,7 +53,6 @@ const ResetPassword = () => {
           </button>
         </form>
         {message && <p className="text-green-600 mt-4">{message}</p>}
-        {error && <p className="text-red-600 mt-4">{error}</p>}
       </div>
     </div>
   );
