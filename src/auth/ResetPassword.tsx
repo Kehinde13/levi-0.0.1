@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -15,16 +17,17 @@ const ResetPassword = () => {
     setError('');
 
     try {
-      const res = await axios.post<{ message: string }>(`/api/auth/reset-password/${token}`, {
+      const res = await axios.post<{ message: string }>(`${API_URL}/auth/reset-password/${token}`, {
         newPassword,
       });
       setMessage(res.data.message);
-      setTimeout(() => navigate('/login'), 3000);
+      setTimeout(() => navigate('/auth'), 3000);
     } catch (err) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Failed to add product";
+          ?.message || "Failed to send rest password email";
       setError(errorMessage);
+      console.log(errorMessage)
     }
   };
 

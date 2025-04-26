@@ -31,7 +31,7 @@ function Signup({ toggleLogin }: Prop) {
     setLoading(true);
 
     try {
-      const response = await axios.post(API_URL, {
+      const response = await axios.post(`${API_URL}/auth/register`, {
         name: data.name,
         email: data.email,
         password: data.password,
@@ -44,8 +44,11 @@ function Signup({ toggleLogin }: Prop) {
 
       toast.success("Account created successfully! Redirecting to login...");
       setTimeout(() => navigate("/auth"), 2000);
-    } catch {
-      toast.error("Signup failed. Please try again.");
+    } catch (err: unknown) {
+      const errorMessage =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message || "Failed to create account";
+      alert(errorMessage)
     } finally {
       setLoading(false);
     }

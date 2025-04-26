@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -12,12 +14,12 @@ const ForgotPassword = () => {
     setError('');
 
     try {
-      const res = await axios.post<{ message: string }>('/api/auth/forgot-password', { email });
+      const res = await axios.post<{ message: string }>(`${API_URL}/auth/forgot-password`, { email });
       setMessage(res.data.message);
     } catch (err) {
       const errorMessage =
         (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message || "Failed to add product";
+          ?.message || "Invalid email address";
       setError(errorMessage);
     }
   };
