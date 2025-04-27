@@ -1,6 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { useBasket } from "@/hooks/useBasket";
+import { toast } from "react-toastify";
 
 type Prop = {
   product: {
@@ -21,14 +22,20 @@ function ProductsCard({ product }: Prop) {
   const {addProductToBasket} = useBasket()
 
 
-  const handleAddToBasket = () => {
-    addProductToBasket(product._id, {
+  const handleAddToBasket = async () => {
+  try{
+    await addProductToBasket(product._id, {
       id: product._id, // Convert _id to id
       name: product.name,
       price: product.price,
       image: product.image,
       quantity: 1, // Ensure quantity exists
     });
+    toast.success("Added to cart")
+   }  
+   catch{
+    toast.error("something went wrong")
+   }
   };
 
   return (
