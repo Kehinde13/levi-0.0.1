@@ -1,4 +1,3 @@
-import Banner from "@/components/Banner"
 import Featured from "@/components/featured"
 import { Header } from "@/components/Header"
 import Products from "@/components/Products"
@@ -10,7 +9,6 @@ function LandingPage() {
     <>
      <Header />
      <Products />
-     <Banner />
      <Featured />
      <Services />
     </>

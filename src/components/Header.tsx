@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
 import appleLogo from "@/assets/Apple_logo.png"
-import { MoveRight } from 'lucide-react';
 
 export function Header() {
   return (
@@ -36,10 +35,7 @@ export function Header() {
                         Off Voucher
                     </h1>
 
-                    <h1 className="flex items-center gap-5">
-                        SHOP NOW 
-                        <MoveRight />
-                    </h1>
+                    
                 </div>
               
               <img src={image} alt="iphone 15" className="md:w-[70%] md:h-screen" />

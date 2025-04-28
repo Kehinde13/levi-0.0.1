@@ -21,7 +21,6 @@ function Featured() {
             <p className="md:w-[70%] text-sm">
               Black and White version of the PS5 coming out on sale
             </p>
-            <p className="border-b-2 md:w-[23%] w-[35%]">Shop Now</p>
           </div>
         </div>
         <div className="bg-black col-span-4 row-span-1 rounded-md relative">
@@ -37,7 +36,6 @@ function Featured() {
             <p className="md:w-[70%] text-sm">
               Featured women collection that gives you another vibe
             </p>
-            <p className="border-b-2 md:w-[23%] w-[35%]">Shop Now</p>
           </div>
         </div>
         <div className="bg-black col-span-2 rounded-md relative">
@@ -45,7 +43,6 @@ function Featured() {
           <div className="bottom-1 absolute p-5 flex flex-col gap-1">
             <h1 className="md:text-3xl text-xl font-semibold">Speakers</h1>
             <p className=" text-sm">amazon wireless speakers</p>
-            <p className="border-b-2 w-[50%]">Shop Now</p>
           </div>
         </div>
         <div className="bg-black col-span-2 rounded-md relative">
@@ -53,7 +50,6 @@ function Featured() {
           <div className="bottom-1 absolute p-5 flex flex-col gap-1">
             <h1 className="md:text-3xl text-xl font-semibold">Perfume</h1>
             <p className=" text-sm">GUCCI Intense OUD EDP</p>
-            <p className="border-b-2 w-[50%]">Shop Now</p>
           </div>
         </div>
       </div>
