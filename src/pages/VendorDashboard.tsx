@@ -135,7 +135,7 @@ const VendorDashboard = () => {
       // Optimistically update products
       setProducts((prev) => [...prev, res.data]);
   
-      alert("Product added successfully!");
+      toast.success("Product added successfully!");
   
       // Reset form
       setNewProduct({
