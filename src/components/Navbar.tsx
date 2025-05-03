@@ -33,9 +33,9 @@ function Navbar() {
             About
           </li>
         </Link>
-         { customer?.role !== "vendor" && <Link to={ !customer ? "/profile" : "/auth"}>
+         { customer?.role !== "vendor" && <Link to={ !customer ? "/auth" : "/profile"}>
           <li className="hover:border-b border-slate-500 cursor-pointer">
-            { !customer ? "Profile" : "Account"}
+            { !customer ? "Account" : "Profile"}
           </li>
         </Link>}
       </ul>
