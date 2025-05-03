@@ -39,7 +39,7 @@ function LandingPageDrawer() {
           </li>
         </Link>
         <Link to={isLoggedIn ? "/profile" : "/auth"}>
-          <li className="hover:border-b border-slate-500 cursor-pointer">
+          <li className=" border-slate-500 cursor-pointer">
             {isLoggedIn ? "Profile" : "Account"}
           </li>
         </Link>

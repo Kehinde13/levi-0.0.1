@@ -3,6 +3,7 @@ import axios from "axios";
 import { AuthContext } from "@/context/AuthContextDefinition";
 import { IOrder, IOrderProduct, user } from "@/lib/types";
 import loader from "@/assets/AnimationFireGIFbyChrisGannon.gif";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -16,6 +17,7 @@ const Profile = () => {
   const [error, setError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const id = localStorage.getItem("id");
 
@@ -32,6 +34,7 @@ const Profile = () => {
         if (res.data.role === "customer") fetchOrderHistory();
       } catch {
         setError("Failed to load user profile.");
+        navigate("/auth");
       } finally {
         setLoading(false);
       }
@@ -50,7 +53,7 @@ const Profile = () => {
 
     fetchUserProfile();
     fetchOrderHistory();
-  }, [token, id]);
+  }, [token, id, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUser({ ...user, [e.target.name]: e.target.value });
