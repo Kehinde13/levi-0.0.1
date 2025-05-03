@@ -5,15 +5,11 @@ import { ShoppingCart } from 'lucide-react'
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { CustomerContext } from "@/context/customerContextDefinition";
-import { AuthContext } from "@/context/AuthContextDefinition";
 
 function Navbar() {
   const { basket } = useBasket();
   const customerContext = useContext(CustomerContext);
   const customer = customerContext?.customer;
-  const authContext = useContext(AuthContext);
-  const userRole = authContext?.userRole;
-  const isLoggedIn = !!userRole;
   const navigate = useNavigate();
   
   
@@ -37,11 +33,11 @@ function Navbar() {
             About
           </li>
         </Link>
-         <Link to={isLoggedIn ? "/profile" : "/auth"}>
+         { customer?.role !== "vendor" && <Link to={ !customer ? "/profile" : "/auth"}>
           <li className="hover:border-b border-slate-500 cursor-pointer">
-            {isLoggedIn ? "Profile" : "Account"}
+            { !customer ? "Profile" : "Account"}
           </li>
-        </Link>
+        </Link>}
       </ul>
 
       <div className="md:flex items-center space-x-4 hidden">
